@@ -1,4 +1,4 @@
-'2018/08/24
+'2018/12/29
 Sub to_ipa_font()
     Dim i As Integer, j As Integer, k As Integer, rowRec As Integer, n As Integer, advanceCol As Integer
     tgSht = 1
@@ -11,7 +11,7 @@ Sub to_ipa_font()
         inputArr = Split(inputStr, ",")
         For i = 0 To UBound(inputArr)
             col = Val(inputArr(i))
-            If col < UBound(objArr, 2) Then
+            If col <= UBound(objArr, 2) Then
                 For j = 2 To UBound(objArr, 1)
                     If objArr(j, col) <> "" Then objArr(j, col) = convert_to_ipa(objArr(j, col))
                 Next

@@ -1,4 +1,4 @@
-'20180824
+'20181229
 '更新日志：零音1.0，整合版，无中古地位
 Sub onestep_c()
     Dim inputStr As String '在这里输入一些必要的信息, 在不含声调不重复的单音节中，当某个声韵调小于等于excepVal时被认为是特例
@@ -620,7 +620,7 @@ Sub onestep_c()
     hpSht = "同音字表"
     toneSht = "调型"
     phonSysSht = "音系"
-	sheets(tgSht).select
+    Sheets(tgSht).Select
     Sheets.Add.Name = srvySht
     Sheets.Add.Name = hpSht
     Sheets.Add.Name = toneSht
@@ -639,7 +639,7 @@ Public Function std_syl(ByVal syl As String) As String
     Dim m As Integer, n As Integer, sensor1 As Integer, sensor2 As Integer, letter As String
     For i = 1 To Len(syl)
         letter = Mid(syl, i, 1)
-        If InStr("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789~!?@#$^&<>*=+", letter) = 0 Then syl = Replace(syl, letter, "")
+        If InStr("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789~!?@#$^&<>*=+:", letter) = 0 Then syl = Replace(syl, letter, "")
     Next
     sensor2 = 0
     i = 1
@@ -857,8 +857,8 @@ Public Function fnl_phon_sort(ByRef typeArr)
     Dim i As Integer, j As Integer
     sortedFnlArr = typeArr
     For i = 1 To UBound(typeArr)
-        For j = 1 To UBound(typeArr) - i
-            If fnl_num(typeArr(j)) > fnl_num(typeArr(j + 1)) Then Call swap(typeArr, j, j + 1)
+        For j = i + 1 To UBound(typeArr)
+            If fnl_num(typeArr(i)) > fnl_num(typeArr(j)) Then Call swap(typeArr, j, i)
         Next
     Next
 End Function
@@ -950,18 +950,18 @@ End Function
 Public Function tone_phon_sort(ByRef typeArr)
     Dim i As Integer, j As Integer
     For i = 1 To UBound(typeArr)
-        For j = 1 To UBound(typeArr) - i
-            If tone_num(typeArr(j)) < tone_num(typeArr(j + 1)) Then Call swap(typeArr, j, j + 1)
+        For j = i + 1 To UBound(typeArr)
+            If tone_num(typeArr(i)) < tone_num(typeArr(j)) Then Call swap(typeArr, j, i)
         Next
     Next
 End Function
 
 Public Function tone_num(ByVal tone As String)  '平、升、降的顺序，曲折调按照前一段判断平升降，短调按降调处理
     Dim k As Single, trend As Integer, ss As Integer
-    ss = 10000
+    ss = 1
     If right(tone, 1) = "入" Then
         tone = left(tone, Len(tone) - 1)
-        ss = 0
+        ss = -1
     End If
     tone = tone + "0"
     If Len(tone) > 1 Then trend = left(tone, 1) - Mid(tone, 2, 1)
@@ -972,15 +972,42 @@ Public Function tone_num(ByVal tone As String)  '平、升、降的顺序，曲�
         Else
             k = 10000
     End If
-    tone_num = k * Val(tone) + ss
+    tone_num = k * (Val(tone) + 1) * ss
 End Function
 
 Function quick_sort(ByRef arr, ByRef lnkArr, ByVal left As Integer, ByVal right As Integer)
-    If left >= right Then Exit Function
-    Dim pivotIdx As Integer
-    pivotIdx = partition(arr, lnkArr, left, right)
-    Call quick_sort(arr, lnkArr, left, pivotIdx - 1)
-    Call quick_sort(arr, lnkArr, pivotIdx + 1, right)
+    If left < right Then
+        Dim pivotIdx As Integer
+        pivotIdx = partition(arr, lnkArr, left, right)
+        Call quick_sort(arr, lnkArr, left, pivotIdx - 1)
+        Call quick_sort(arr, lnkArr, pivotIdx + 1, right)
+    End If
+End Function
+'i i pivot j jj
+Function npartition(ByRef arr, ByRef lnkArr, ByVal left As Integer, ByVal right As Integer)
+    Dim i As Integer, j As Integer
+    pivot = arr((left + right) \ 2) '整除是\
+    i = left
+    j = right
+    Call swap(arr, i, (left + right) \ 2)
+    Call swap(lnkArr, i, (left + right) \ 2)
+    Do While i <> j
+        Do While i < j And arr(j) <= pivot
+            j = j - 1
+        Loop
+        If i <> j Then
+            Call swap(arr, i, j)
+            Call swap(lnkArr, i, j)
+        End If
+        Do While i < j And arr(i) >= pivot
+            i = i + 1
+        Loop
+        If i <> j Then
+            Call swap(arr, i, j)
+            Call swap(lnkArr, i, j)
+        End If
+    Loop
+    partition = i
 End Function
 
 Function partition(ByRef arr, ByRef lnkArr, ByVal left As Integer, ByVal right As Integer)
@@ -1162,7 +1189,7 @@ Function cut_cake(ByVal cake As Integer, ByRef countArr)
     For i = LBound(countArr) To maxPos
         pieceSum = pieceSum + piece(i)
     Next
-    If pieceSum > cake And piece(LBound(countArr)) > int(cake/2) Then
+    If pieceSum > cake And piece(LBound(countArr)) > Int(cake / 2) Then
         piece(LBound(countArr)) = piece(LBound(countArr)) - 1
         pieceSum = pieceSum - 1
     End If
