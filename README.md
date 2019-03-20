@@ -6,10 +6,10 @@ After the update in March 19,I decided to name this kit 'cdfw'.And 'Lykit01' wil
 
 ## version
 ### excel plugs
-The two excel plugs are the earlier work of this program and  are written in vba.The .vb file is the source code,the .xlam file is the plug and can be added to your excel."零音.1.2.5.xlam" is written in 2018/7/29 and doesn't have many funcitons."Lykit"
+The two excel plugs are the earlier work of this program and  are written in vba.The .vb file is the source code,the .xlam file is the plug and can be added to your excel."零音.1.2.5.xlam" is written in 2018/7/29 and doesn't have many funcitons."Lykit for cdfw.xlam" is newly updated in 2018/12/29."Lykit for cdfw.xlam" has a new function 'phone system' and has been largely optimized in performance.But it has some bad bugs in rare occasions and I haven't fixxed it.I don't have time to fix it now and I would like you to use the cdfw.EXE instead.
 
 ### EXE
-The exe version is written in python.I added many new functions to this new app.And the most important thing is that now it has a UI,so that users may use the app easily.
+The exe version is newly written in python.I added many new functions to this new app.And the most important thing is that now it has a UI,so that users may use the app easily.But it surely have many bugs.If you met one,please contact me with the error information and your meta-data(if possible).
 
 ## more
 If you have any questions,contact me at 3275803255@qq.com.
